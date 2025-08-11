@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./rpc";
+
+message TxSearchReq {
+  string Hash = 1;
+  string From = 2;
+  string To = 3;
+  string Account = 4;
+}
+
+message TxSearchRes {
+  bytes Tx = 1;
+}
+
+service Tx {
+  rpc TxSearch(TxSearchReq) returns (stream TxSearchRes);
+}
