@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Tx_TxSearch_FullMethodName = "/Tx/TxSearch"
+	Tx_TxSign_FullMethodName   = "/Tx/TxSign"
 )
 
 // TxClient is the client API for Tx service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TxClient interface {
 	TxSearch(ctx context.Context, in *TxSearchReq, opts ...grpc.CallOption) (grpc.ServerStreamingClient[TxSearchRes], error)
+	TxSign(ctx context.Context, in *TxSignReq, opts ...grpc.CallOption) (*TxSignRes, error)
 }
 
 type txClient struct {
@@ -56,11 +58,22 @@ func (c *txClient) TxSearch(ctx context.Context, in *TxSearchReq, opts ...grpc.C
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Tx_TxSearchClient = grpc.ServerStreamingClient[TxSearchRes]
 
+func (c *txClient) TxSign(ctx context.Context, in *TxSignReq, opts ...grpc.CallOption) (*TxSignRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TxSignRes)
+	err := c.cc.Invoke(ctx, Tx_TxSign_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TxServer is the server API for Tx service.
 // All implementations must embed UnimplementedTxServer
 // for forward compatibility.
 type TxServer interface {
 	TxSearch(*TxSearchReq, grpc.ServerStreamingServer[TxSearchRes]) error
+	TxSign(context.Context, *TxSignReq) (*TxSignRes, error)
 	mustEmbedUnimplementedTxServer()
 }
 
@@ -73,6 +86,9 @@ type UnimplementedTxServer struct{}
 
 func (UnimplementedTxServer) TxSearch(*TxSearchReq, grpc.ServerStreamingServer[TxSearchRes]) error {
 	return status.Errorf(codes.Unimplemented, "method TxSearch not implemented")
+}
+func (UnimplementedTxServer) TxSign(context.Context, *TxSignReq) (*TxSignRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TxSign not implemented")
 }
 func (UnimplementedTxServer) mustEmbedUnimplementedTxServer() {}
 func (UnimplementedTxServer) testEmbeddedByValue()            {}
@@ -106,13 +122,36 @@ func _Tx_TxSearch_Handler(srv interface{}, stream grpc.ServerStream) error {
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Tx_TxSearchServer = grpc.ServerStreamingServer[TxSearchRes]
 
+func _Tx_TxSign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TxSignReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TxServer).TxSign(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tx_TxSign_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TxServer).TxSign(ctx, req.(*TxSignReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tx_ServiceDesc is the grpc.ServiceDesc for Tx service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Tx_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "Tx",
 	HandlerType: (*TxServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "TxSign",
+			Handler:    _Tx_TxSign_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "TxSearch",

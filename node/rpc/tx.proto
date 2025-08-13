@@ -13,6 +13,19 @@ message TxSearchRes {
   bytes Tx = 1;
 }
 
+message TxSignReq {
+  string From = 1;
+  string To = 2;
+  uint64 Value = 3;
+  string Password = 4;
+}
+
+message TxSignRes {
+  bytes Tx = 1;
+}
+
 service Tx {
   rpc TxSearch(TxSearchReq) returns (stream TxSearchRes);
+  rpc TxSign(TxSignReq) returns (TxSignRes);
+
 }
