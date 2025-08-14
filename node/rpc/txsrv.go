@@ -13,7 +13,12 @@ import (
 )
 
 type TxApplier interface {
+	ApplyTx(tx chain.SigTx) error
 	Nonce(acc chain.Address) uint64
+}
+
+type TxRelayer interface {
+	RelayTx(tx chain.SigTx) error
 }
 
 type TxSrv struct {
@@ -21,6 +26,25 @@ type TxSrv struct {
 	keyStoreDir   string
 	blockStoreDir string
 	txApplier     TxApplier
+	txRelayer     TxRelayer
+}
+
+func sendTxSearchRes(
+	blk chain.SigBlock, tx chain.SigTx,
+	stream grpc.ServerStreamingServer[TxSearchRes],
+) error {
+	stx := chain.NewSearchTx(tx, blk.Number, blk.Hash(), blk.MerkleRoot)
+	jtx, err := json.Marshal(stx)
+
+	if err != nil {
+		return err
+	}
+	res := &TxSearchRes{Tx: jtx}
+	err = stream.Send(res)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *TxSrv) TxSign(_ context.Context, req *TxSignReq) (*TxSignRes, error) {
@@ -79,4 +103,23 @@ block:
 		}
 	}
 	return nil
+}
+
+func (s *TxSrv) TxSend(_ context.Context, req *TxSendReq) (*TxSendRes, error) {
+	var tx chain.SigTx
+	err := json.Unmarshal(req.Tx, &tx)
+
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid transaction format: %v", err)
+	}
+	err = s.txApplier.ApplyTx(tx)
+	if err != nil {
+		return nil, status.Errorf(codes.FailedPrecondition, err.Error())
+	}
+
+	if s.txRelayer != nil {
+		s.txRelayer.RelayTx(tx)
+	}
+	res := &TxSendRes{Hash: tx.Hash().String()}
+	return res, nil
 }

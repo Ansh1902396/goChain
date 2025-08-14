@@ -41,11 +41,6 @@ func (b Block) Hash() Hash {
 	return NewHash(b)
 }
 
-// WIll be developed soon
-func MerkleHash(txs []SigTx, TxHash func(tx Tx) Hash, TxPairHash func(Hash, Hash) Hash) ([]Hash, error) {
-
-}
-
 type SigBlock struct {
 	Block
 	Sig []byte `json:"sig"`

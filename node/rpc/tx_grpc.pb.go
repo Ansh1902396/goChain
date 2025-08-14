@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Tx_TxSearch_FullMethodName = "/Tx/TxSearch"
 	Tx_TxSign_FullMethodName   = "/Tx/TxSign"
+	Tx_TxSend_FullMethodName   = "/Tx/TxSend"
 )
 
 // TxClient is the client API for Tx service.
@@ -29,6 +30,7 @@ const (
 type TxClient interface {
 	TxSearch(ctx context.Context, in *TxSearchReq, opts ...grpc.CallOption) (grpc.ServerStreamingClient[TxSearchRes], error)
 	TxSign(ctx context.Context, in *TxSignReq, opts ...grpc.CallOption) (*TxSignRes, error)
+	TxSend(ctx context.Context, in *TxSendReq, opts ...grpc.CallOption) (*TxSendRes, error)
 }
 
 type txClient struct {
@@ -68,12 +70,23 @@ func (c *txClient) TxSign(ctx context.Context, in *TxSignReq, opts ...grpc.CallO
 	return out, nil
 }
 
+func (c *txClient) TxSend(ctx context.Context, in *TxSendReq, opts ...grpc.CallOption) (*TxSendRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TxSendRes)
+	err := c.cc.Invoke(ctx, Tx_TxSend_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TxServer is the server API for Tx service.
 // All implementations must embed UnimplementedTxServer
 // for forward compatibility.
 type TxServer interface {
 	TxSearch(*TxSearchReq, grpc.ServerStreamingServer[TxSearchRes]) error
 	TxSign(context.Context, *TxSignReq) (*TxSignRes, error)
+	TxSend(context.Context, *TxSendReq) (*TxSendRes, error)
 	mustEmbedUnimplementedTxServer()
 }
 
@@ -89,6 +102,9 @@ func (UnimplementedTxServer) TxSearch(*TxSearchReq, grpc.ServerStreamingServer[T
 }
 func (UnimplementedTxServer) TxSign(context.Context, *TxSignReq) (*TxSignRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TxSign not implemented")
+}
+func (UnimplementedTxServer) TxSend(context.Context, *TxSendReq) (*TxSendRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TxSend not implemented")
 }
 func (UnimplementedTxServer) mustEmbedUnimplementedTxServer() {}
 func (UnimplementedTxServer) testEmbeddedByValue()            {}
@@ -140,6 +156,24 @@ func _Tx_TxSign_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tx_TxSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TxSendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TxServer).TxSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Tx_TxSend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TxServer).TxSend(ctx, req.(*TxSendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tx_ServiceDesc is the grpc.ServiceDesc for Tx service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -150,6 +184,10 @@ var Tx_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TxSign",
 			Handler:    _Tx_TxSign_Handler,
+		},
+		{
+			MethodName: "TxSend",
+			Handler:    _Tx_TxSend_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -133,6 +133,94 @@ func (x *TxSearchRes) GetTx() []byte {
 	return nil
 }
 
+type TxSendReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tx            []byte                 `protobuf:"bytes,1,opt,name=Tx,proto3" json:"Tx,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TxSendReq) Reset() {
+	*x = TxSendReq{}
+	mi := &file_tx_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TxSendReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TxSendReq) ProtoMessage() {}
+
+func (x *TxSendReq) ProtoReflect() protoreflect.Message {
+	mi := &file_tx_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TxSendReq.ProtoReflect.Descriptor instead.
+func (*TxSendReq) Descriptor() ([]byte, []int) {
+	return file_tx_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TxSendReq) GetTx() []byte {
+	if x != nil {
+		return x.Tx
+	}
+	return nil
+}
+
+type TxSendRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Hash          string                 `protobuf:"bytes,1,opt,name=Hash,proto3" json:"Hash,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TxSendRes) Reset() {
+	*x = TxSendRes{}
+	mi := &file_tx_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TxSendRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TxSendRes) ProtoMessage() {}
+
+func (x *TxSendRes) ProtoReflect() protoreflect.Message {
+	mi := &file_tx_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TxSendRes.ProtoReflect.Descriptor instead.
+func (*TxSendRes) Descriptor() ([]byte, []int) {
+	return file_tx_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TxSendRes) GetHash() string {
+	if x != nil {
+		return x.Hash
+	}
+	return ""
+}
+
 type TxSignReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	From          string                 `protobuf:"bytes,1,opt,name=From,proto3" json:"From,omitempty"`
@@ -145,7 +233,7 @@ type TxSignReq struct {
 
 func (x *TxSignReq) Reset() {
 	*x = TxSignReq{}
-	mi := &file_tx_proto_msgTypes[2]
+	mi := &file_tx_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -157,7 +245,7 @@ func (x *TxSignReq) String() string {
 func (*TxSignReq) ProtoMessage() {}
 
 func (x *TxSignReq) ProtoReflect() protoreflect.Message {
-	mi := &file_tx_proto_msgTypes[2]
+	mi := &file_tx_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -170,7 +258,7 @@ func (x *TxSignReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TxSignReq.ProtoReflect.Descriptor instead.
 func (*TxSignReq) Descriptor() ([]byte, []int) {
-	return file_tx_proto_rawDescGZIP(), []int{2}
+	return file_tx_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TxSignReq) GetFrom() string {
@@ -210,7 +298,7 @@ type TxSignRes struct {
 
 func (x *TxSignRes) Reset() {
 	*x = TxSignRes{}
-	mi := &file_tx_proto_msgTypes[3]
+	mi := &file_tx_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -222,7 +310,7 @@ func (x *TxSignRes) String() string {
 func (*TxSignRes) ProtoMessage() {}
 
 func (x *TxSignRes) ProtoReflect() protoreflect.Message {
-	mi := &file_tx_proto_msgTypes[3]
+	mi := &file_tx_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -235,7 +323,7 @@ func (x *TxSignRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TxSignRes.ProtoReflect.Descriptor instead.
 func (*TxSignRes) Descriptor() ([]byte, []int) {
-	return file_tx_proto_rawDescGZIP(), []int{3}
+	return file_tx_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *TxSignRes) GetTx() []byte {
@@ -256,19 +344,26 @@ const file_tx_proto_rawDesc = "" +
 	"\x02To\x18\x03 \x01(\tR\x02To\x12\x18\n" +
 	"\aAccount\x18\x04 \x01(\tR\aAccount\"\x1d\n" +
 	"\vTxSearchRes\x12\x0e\n" +
-	"\x02Tx\x18\x01 \x01(\fR\x02Tx\"a\n" +
+	"\x02Tx\x18\x01 \x01(\fR\x02Tx\"\x1b\n" +
+	"\tTxSendReq\x12\x0e\n" +
+	"\x02Tx\x18\x01 \x01(\fR\x02Tx\"\x1f\n" +
+	"\tTxSendRes\x12\x12\n" +
+	"\x04Hash\x18\x01 \x01(\tR\x04Hash\"a\n" +
 	"\tTxSignReq\x12\x12\n" +
 	"\x04From\x18\x01 \x01(\tR\x04From\x12\x0e\n" +
 	"\x02To\x18\x02 \x01(\tR\x02To\x12\x14\n" +
 	"\x05Value\x18\x03 \x01(\x04R\x05Value\x12\x1a\n" +
 	"\bPassword\x18\x04 \x01(\tR\bPassword\"\x1b\n" +
 	"\tTxSignRes\x12\x0e\n" +
-	"\x02Tx\x18\x01 \x01(\fR\x02Tx2P\n" +
+	"\x02Tx\x18\x01 \x01(\fR\x02Tx2r\n" +
 	"\x02Tx\x12(\n" +
 	"\bTxSearch\x12\f.TxSearchReq\x1a\f.TxSearchRes0\x01\x12 \n" +
 	"\x06TxSign\x12\n" +
 	".TxSignReq\x1a\n" +
-	".TxSignResB\aZ\x05./rpcb\x06proto3"
+	".TxSignRes\x12 \n" +
+	"\x06TxSend\x12\n" +
+	".TxSendReq\x1a\n" +
+	".TxSendResB\aZ\x05./rpcb\x06proto3"
 
 var (
 	file_tx_proto_rawDescOnce sync.Once
@@ -282,20 +377,24 @@ func file_tx_proto_rawDescGZIP() []byte {
 	return file_tx_proto_rawDescData
 }
 
-var file_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_tx_proto_goTypes = []any{
 	(*TxSearchReq)(nil), // 0: TxSearchReq
 	(*TxSearchRes)(nil), // 1: TxSearchRes
-	(*TxSignReq)(nil),   // 2: TxSignReq
-	(*TxSignRes)(nil),   // 3: TxSignRes
+	(*TxSendReq)(nil),   // 2: TxSendReq
+	(*TxSendRes)(nil),   // 3: TxSendRes
+	(*TxSignReq)(nil),   // 4: TxSignReq
+	(*TxSignRes)(nil),   // 5: TxSignRes
 }
 var file_tx_proto_depIdxs = []int32{
 	0, // 0: Tx.TxSearch:input_type -> TxSearchReq
-	2, // 1: Tx.TxSign:input_type -> TxSignReq
-	1, // 2: Tx.TxSearch:output_type -> TxSearchRes
-	3, // 3: Tx.TxSign:output_type -> TxSignRes
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	4, // 1: Tx.TxSign:input_type -> TxSignReq
+	2, // 2: Tx.TxSend:input_type -> TxSendReq
+	1, // 3: Tx.TxSearch:output_type -> TxSearchRes
+	5, // 4: Tx.TxSign:output_type -> TxSignRes
+	3, // 5: Tx.TxSend:output_type -> TxSendRes
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -312,7 +411,7 @@ func file_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tx_proto_rawDesc), len(file_tx_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
