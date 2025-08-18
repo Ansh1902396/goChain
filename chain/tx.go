@@ -122,3 +122,10 @@ func VerifyTx(tx SigTx) (bool, error) {
 	acc := NewAddress(pub)
 	return acc == tx.From, nil
 }
+
+func pairHashStr(l, r string) string {
+	if r == "" {
+		return l
+	}
+	return l + r
+}

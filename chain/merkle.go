@@ -3,7 +3,27 @@ package chain
 import (
 	"fmt"
 	"math"
+	"slices"
 )
+
+type position int
+
+const (
+	Left  position = 1
+	Right position = 2
+)
+
+type Proof[H comparable] struct {
+	Hash H        `json:"hash"`
+	Pos  position `json:"pos"`
+}
+
+func newProof[H comparable](hash H, pos position) Proof[H] {
+	return Proof[H]{
+		Hash: hash,
+		Pos:  pos,
+	}
+}
 
 func MerkleHash[T any, H comparable](
 	txs []T, typeHash func(T) H, pairHash func(H, H) H,
@@ -33,4 +53,109 @@ func MerkleHash[T any, H comparable](
 	}
 
 	return merkleTree, nil
+}
+
+func MerkleProve[H comparable](txh H, merkleTree []H) ([]Proof[H], error) {
+	if len(merkleTree) == 0 {
+		return nil, fmt.Errorf("merkle: empty merkle tree")
+
+	}
+
+	start := len(merkleTree) / 2
+
+	i := slices.Index(merkleTree[start:], txh)
+	if i == -1 {
+		return nil, fmt.Errorf("merkle prove : transaction %v not found", txh)
+	}
+
+	i += start
+
+	if len(merkleTree) == 1 {
+		return []Proof[H]{newProof(merkleTree[0], Left)}, nil
+	}
+
+	if len(merkleTree) == 3 {
+		return []Proof[H]{
+			newProof(merkleTree[1], Left), newProof(merkleTree[2], Right),
+		}, nil
+	}
+
+	merkleProof := make([]Proof[H], 0)
+
+	var nilHash H
+
+	if i%2 == 0 {
+		merkleProof = append(merkleProof, newProof(merkleTree[i-1], Left))
+		merkleProof = append(merkleProof, newProof(merkleTree[i], Right))
+
+		i--
+	} else {
+		merkleProof = append(merkleProof, newProof(merkleTree[i], Left))
+		hash := merkleTree[i+1]
+
+		if hash != nilHash {
+			merkleProof = append(merkleProof, newProof(hash, Right))
+		}
+
+		i++
+	}
+
+	for {
+		if i%2 == 0 {
+			i = (i - 2) / 2
+		} else {
+			i = (i - 1) / 2
+		}
+
+		if i%2 == 0 {
+			i--
+		} else {
+			i++
+		}
+
+		hash := merkleTree[i]
+
+		if hash != nilHash {
+			if i%2 == 0 {
+				merkleProof = append(merkleProof, newProof(hash, Right))
+			} else {
+				merkleProof = append(merkleProof, newProof(hash, Left))
+			}
+		}
+
+		if i == 2 || i == 1 {
+			break
+		}
+
+	}
+	return merkleProof, nil
+}
+
+func MerkleVerify[H comparable](
+	txh H, merkleProof []Proof[H], merkleRoot H, pairHash func(H, H) H,
+) bool {
+	i := slices.IndexFunc(merkleProof, func(proof Proof[H]) bool {
+		return proof.Hash == txh
+	})
+	if i == -1 {
+		return false
+	}
+
+	hash := merkleProof[0].Hash
+
+	for i := 1; i < len(merkleProof); i++ {
+		proof := merkleProof[i]
+
+		if proof.Pos == Left {
+			hash = pairHash(proof.Hash, hash)
+		} else {
+			hash = pairHash(hash, proof.Hash)
+		}
+	}
+
+	return hash == merkleRoot
+}
+
+func typeHash(s string) string {
+	return s // Placeholder for actual hashing logic
 }
