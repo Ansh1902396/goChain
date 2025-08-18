@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/Ansh1902396/chain"
@@ -120,4 +121,99 @@ func (s *StateSync) createGenesis() (chain.SigGenesis, error) {
 
 	return sgen, nil
 
+}
+
+
+func (s *StateSync) syncGenesis() (chain.SigGenesis , error) { 
+	jgen , err := s.grpcGenesisSync()
+	if err != nil { 
+		return chain.SigGenesis{}, err
+	}
+
+	var gen chain.SigGenesis
+	err =json.Unmarshal(jgen, &gen)
+
+	if err != nil { 
+		return chain.SigGenesis{} , err 
+	}
+	valid , err := chain.VerifyGen(gen)
+
+	if err != nil { 
+		return chain.SigGenesis{}, err	
+	}
+
+	if !valid {
+		return chain.SigGenesis{}, fmt.Errorf("invalid genesis signature")
+	}
+
+	err = gen.Write(s.cfg.BlockStoreDir)
+	if err != nil {
+		return chain.SigGenesis{}, err
+	}
+
+	return gen, nil	
+
+}
+
+
+func(s *StateSync) readBlocks() error { 
+	blocks ,closeBlocks, err := chain.ReadBlocks(s.cfg.BlockStoreDir)
+	if err != nil {
+		return err 
+	}
+
+	defer closeBlocks()	
+
+	for err , blk := range blocks { 
+		if err != nil { 
+			return err 
+		}
+
+		clone := s.state.Clone()
+
+		err = clone.ApplyBlock(blk)
+		if err != nil { 
+			return err 
+		}
+		s.state.Apply(clone)
+	}
+	return nil 
+}
+
+func(s *StateSync) syncBlocks() error { 
+	for _,peer := range s.peerReader.Peers() { 
+		blocks , closeBlocks , err := s.grpcBlockSync(peer)
+		if err != nil {
+			 return err 
+		}
+
+		defer closeBlocks()
+
+		for err , jblk := range blocks {
+			if err != nil { 
+				return err 
+			}
+
+			var blk chain.SigBlock
+			err = json.Unmarshal(jblk , &blk)
+
+			if err != nil { 
+				return err
+			}
+			clone := s.state.Clone()
+			err = clone.ApplyBlock(blk)
+			if err != nil {
+				 return err 
+			}
+			s.state.Apply(clone)
+
+			err = blk.Write(s.cfg.BlockStoreDir)
+
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }

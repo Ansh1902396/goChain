@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"context"
 	"encoding/json"
 	"strings"
 
@@ -48,5 +49,45 @@ func (s *BlockSrv) BlockSearch(
 			break
 		}
 	}
+	return nil
+}
+
+func (s *BlockSrv) GenesisSync(
+	_ context.Context, req *GenesisSyncReq,
+) (*GenesisSyncRes, error) {
+	jgen, err := chain.ReadGenesisBytes(s.blockStoreDir)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+	res := &GenesisSyncRes{Genesis: jgen}
+	return res, nil
+}
+
+func (s *BlockSrv) BlockSync(
+	req *BlockSyncReq, stream grpc.ServerStreamingServer[BlockSyncRes],
+) error {
+	blocks, closeBlocks, err := chain.ReadBlocksBytes(s.blockStoreDir)
+
+	if err != nil {
+		return status.Errorf(codes.NotFound, err.Error())
+	}
+	defer closeBlocks()
+
+	num, i := int(req.Number), 1
+
+	for err, jblk := range blocks {
+		if err != nil {
+			return status.Errorf(codes.Internal, err.Error())
+		}
+		if i >= num {
+			res := &BlockSyncRes{Block: jblk}
+			err = stream.Send(res)
+			if err != nil {
+				return status.Errorf(codes.Internal, err.Error())
+			}
+		}
+		i++
+	}
+
 	return nil
 }
