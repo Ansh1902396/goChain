@@ -3,6 +3,7 @@ package rpc
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -121,5 +122,84 @@ func (s *TxSrv) TxSend(_ context.Context, req *TxSendReq) (*TxSendRes, error) {
 		s.txRelayer.RelayTx(tx)
 	}
 	res := &TxSendRes{Hash: tx.Hash().String()}
+	return res, nil
+}
+
+func (s *TxSrv) TxProve(_ context.Context, req *TxProveReq) (*TxProveRes, error) {
+	blocks, closeBlocks, err := chain.ReadBlocks(s.blockStoreDir)
+
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, err.Error())
+	}
+
+	defer closeBlocks()
+
+	for err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	for err, blk := range blocks {
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, err.Error())
+		}
+
+		for _, tx := range blk.Txs {
+			if tx.Hash().String() == req.Hash {
+				merkleTree, err := chain.MerkleHash(
+					blk.Txs, chain.TxHash, chain.TxPairHash,
+				)
+
+				if err != nil {
+					return nil, status.Errorf(codes.Internal, err.Error())
+				}
+
+				merkleProof, err := chain.MerkleProve(tx.Hash(), merkleTree)
+
+				if err != nil {
+					return nil, status.Errorf(codes.Internal, err.Error())
+				}
+
+				jmp, err := json.Marshal(merkleProof)
+
+				if err != nil {
+					return nil, status.Errorf(codes.Internal, err.Error())
+				}
+				res := &TxProveRes{MerkleProof: jmp}
+
+				return res, nil
+
+			}
+		}
+	}
+
+	return nil, status.Errorf(
+		codes.NotFound, fmt.Sprintf("Transaction not found: %v", req.Hash),
+	)
+
+}
+
+func (s *TxSrv) TxVerify(
+	_ context.Context, req *TxVerifyReq,
+) (*TxVerifyRes, error) {
+	txh, err := chain.DecodeHash(req.Hash)
+
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid transaction hash: %v", err)
+	}
+
+	var merkleProof []chain.Proof[chain.Hash]
+	err = json.Unmarshal(req.MerkleProof, &merkleProof)
+
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
+
+	merkleRoot, err := chain.DecodeHash(req.MerkleRoot)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
+
+	valid := chain.MerkleVerify(txh, merkleProof, merkleRoot, chain.TxPairHash)
+	res := &TxVerifyRes{Valid: valid}
 	return res, nil
 }
