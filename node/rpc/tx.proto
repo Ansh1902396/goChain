@@ -52,10 +52,17 @@ message TxSignRes {
   bytes Tx = 1;
 }
 
+message TxReceiveReq { 
+  bytes Tx =1 ; 
+}
+
+message TxReceiveRes{}
+
 service Tx {
   rpc TxSearch(TxSearchReq) returns (stream TxSearchRes);
   rpc TxSign(TxSignReq) returns (TxSignRes);
   rpc TxSend(TxSendReq) returns (TxSendRes);
   rpc TxProve(TxProveReq) returns (TxProveRes);
   rpc TxVerify(TxVerifyReq) returns (TxVerifyRes);
+  rpc TxReceive(stream TxReceiveReq) returns(TxReceiveRes);
 };

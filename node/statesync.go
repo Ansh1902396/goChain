@@ -106,7 +106,7 @@ func (s *StateSync) createGenesis() (chain.SigGenesis, error) {
 	}
 
 	gen := chain.NewGenesis(
-		s.cfg.Chain , auth.Address() , acc.Address() , s.cfg.Balance
+		s.cfg.Chain, auth.Address(), acc.Address(), s.cfg.Balance,
 	)
 
 	sgen, err := auth.SignGen(gen)
@@ -123,23 +123,22 @@ func (s *StateSync) createGenesis() (chain.SigGenesis, error) {
 
 }
 
-
-func (s *StateSync) syncGenesis() (chain.SigGenesis , error) { 
-	jgen , err := s.grpcGenesisSync()
-	if err != nil { 
+func (s *StateSync) syncGenesis() (chain.SigGenesis, error) {
+	jgen, err := s.grpcGenesisSync()
+	if err != nil {
 		return chain.SigGenesis{}, err
 	}
 
 	var gen chain.SigGenesis
-	err =json.Unmarshal(jgen, &gen)
+	err = json.Unmarshal(jgen, &gen)
 
-	if err != nil { 
-		return chain.SigGenesis{} , err 
+	if err != nil {
+		return chain.SigGenesis{}, err
 	}
-	valid , err := chain.VerifyGen(gen)
+	valid, err := chain.VerifyGen(gen)
 
-	if err != nil { 
-		return chain.SigGenesis{}, err	
+	if err != nil {
+		return chain.SigGenesis{}, err
 	}
 
 	if !valid {
@@ -151,59 +150,58 @@ func (s *StateSync) syncGenesis() (chain.SigGenesis , error) {
 		return chain.SigGenesis{}, err
 	}
 
-	return gen, nil	
+	return gen, nil
 
 }
 
-
-func(s *StateSync) readBlocks() error { 
-	blocks ,closeBlocks, err := chain.ReadBlocks(s.cfg.BlockStoreDir)
+func (s *StateSync) readBlocks() error {
+	blocks, closeBlocks, err := chain.ReadBlocks(s.cfg.BlockStoreDir)
 	if err != nil {
-		return err 
+		return err
 	}
 
-	defer closeBlocks()	
+	defer closeBlocks()
 
-	for err , blk := range blocks { 
-		if err != nil { 
-			return err 
+	for err, blk := range blocks {
+		if err != nil {
+			return err
 		}
 
 		clone := s.state.Clone()
 
 		err = clone.ApplyBlock(blk)
-		if err != nil { 
-			return err 
+		if err != nil {
+			return err
 		}
 		s.state.Apply(clone)
 	}
-	return nil 
+	return nil
 }
 
-func(s *StateSync) syncBlocks() error { 
-	for _,peer := range s.peerReader.Peers() { 
-		blocks , closeBlocks , err := s.grpcBlockSync(peer)
+func (s *StateSync) syncBlocks() error {
+	for _, peer := range s.peerReader.Peers() {
+		blocks, closeBlocks, err := s.grpcBlockSync(peer)
 		if err != nil {
-			 return err 
+			return err
 		}
 
 		defer closeBlocks()
 
-		for err , jblk := range blocks {
-			if err != nil { 
-				return err 
+		for err, jblk := range blocks {
+			if err != nil {
+				return err
 			}
 
 			var blk chain.SigBlock
-			err = json.Unmarshal(jblk , &blk)
+			err = json.Unmarshal(jblk, &blk)
 
-			if err != nil { 
+			if err != nil {
 				return err
 			}
 			clone := s.state.Clone()
 			err = clone.ApplyBlock(blk)
 			if err != nil {
-				 return err 
+				return err
 			}
 			s.state.Apply(clone)
 

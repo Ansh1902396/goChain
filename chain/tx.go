@@ -129,3 +129,26 @@ func pairHashStr(l, r string) string {
 	}
 	return l + r
 }
+
+type SearchTx struct {
+	SigTx
+	BlockNumber uint64 `json:"blockNumber"`
+	BlockHash   Hash   `json:"blockHash"`
+	MerkleRoot  Hash   `json:"merkleRoot"`
+}
+
+func NewSearchTx(tx SigTx, blockNumber uint64, blockHash, merkleRoot Hash) SearchTx {
+	return SearchTx{
+		SigTx:       tx,
+		BlockNumber: blockNumber,
+		BlockHash:   blockHash,
+		MerkleRoot:  merkleRoot,
+	}
+}
+
+func (t SearchTx) String() string {
+	return fmt.Sprintf(
+		"%v    blk %4d   %.7s   mrk %.7s",
+		t.SigTx, t.BlockNumber, t.BlockHash, t.MerkleRoot,
+	)
+}

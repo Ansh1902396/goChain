@@ -94,3 +94,8 @@ func ReadGenesis(dir string) (SigGenesis, error) {
 	err = json.Unmarshal(jgen, &gen)
 	return gen, err
 }
+
+func ReadGenesisBytes(dir string) ([]byte, error) {
+	path := filepath.Join(dir, genesisFile)
+	return os.ReadFile(path)
+}

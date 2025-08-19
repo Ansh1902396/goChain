@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"path/filepath"
 	"strings"
 
@@ -202,4 +203,43 @@ func (s *TxSrv) TxVerify(
 	valid := chain.MerkleVerify(txh, merkleProof, merkleRoot, chain.TxPairHash)
 	res := &TxVerifyRes{Valid: valid}
 	return res, nil
+}
+
+func (s *TxSrv) TxReceive(
+	stream grpc.ClientStreamingServer[TxReceiveReq, TxReceiveRes],
+) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			res := &TxReceiveRes{}
+			return stream.SendAndClose(res)
+		}
+
+		if err != nil {
+			return status.Errorf(codes.Internal, err.Error())
+		}
+
+		var tx chain.SigTx
+
+		err = json.Unmarshal(req.Tx, &tx)
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		fmt.Printf("<== Tx receive: %v\n", tx)
+
+		err = s.txApplier.ApplyTx(tx)
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		if s.txRelayer != nil {
+			s.txRelayer.RelayTx(tx)
+		}
+
+	}
 }

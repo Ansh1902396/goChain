@@ -525,6 +525,86 @@ func (x *TxSignRes) GetTx() []byte {
 	return nil
 }
 
+type TxReceiveReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tx            []byte                 `protobuf:"bytes,1,opt,name=Tx,proto3" json:"Tx,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TxReceiveReq) Reset() {
+	*x = TxReceiveReq{}
+	mi := &file_tx_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TxReceiveReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TxReceiveReq) ProtoMessage() {}
+
+func (x *TxReceiveReq) ProtoReflect() protoreflect.Message {
+	mi := &file_tx_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TxReceiveReq.ProtoReflect.Descriptor instead.
+func (*TxReceiveReq) Descriptor() ([]byte, []int) {
+	return file_tx_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *TxReceiveReq) GetTx() []byte {
+	if x != nil {
+		return x.Tx
+	}
+	return nil
+}
+
+type TxReceiveRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TxReceiveRes) Reset() {
+	*x = TxReceiveRes{}
+	mi := &file_tx_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TxReceiveRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TxReceiveRes) ProtoMessage() {}
+
+func (x *TxReceiveRes) ProtoReflect() protoreflect.Message {
+	mi := &file_tx_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TxReceiveRes.ProtoReflect.Descriptor instead.
+func (*TxReceiveRes) Descriptor() ([]byte, []int) {
+	return file_tx_proto_rawDescGZIP(), []int{11}
+}
+
 var File_tx_proto protoreflect.FileDescriptor
 
 const file_tx_proto_rawDesc = "" +
@@ -561,7 +641,10 @@ const file_tx_proto_rawDesc = "" +
 	"\x05Value\x18\x03 \x01(\x04R\x05Value\x12\x1a\n" +
 	"\bPassword\x18\x04 \x01(\tR\bPassword\"\x1b\n" +
 	"\tTxSignRes\x12\x0e\n" +
-	"\x02Tx\x18\x01 \x01(\fR\x02Tx2\xbf\x01\n" +
+	"\x02Tx\x18\x01 \x01(\fR\x02Tx\"\x1e\n" +
+	"\fTxReceiveReq\x12\x0e\n" +
+	"\x02Tx\x18\x01 \x01(\fR\x02Tx\"\x0e\n" +
+	"\fTxReceiveRes2\xec\x01\n" +
 	"\x02Tx\x12(\n" +
 	"\bTxSearch\x12\f.TxSearchReq\x1a\f.TxSearchRes0\x01\x12 \n" +
 	"\x06TxSign\x12\n" +
@@ -571,7 +654,8 @@ const file_tx_proto_rawDesc = "" +
 	".TxSendReq\x1a\n" +
 	".TxSendRes\x12#\n" +
 	"\aTxProve\x12\v.TxProveReq\x1a\v.TxProveRes\x12&\n" +
-	"\bTxVerify\x12\f.TxVerifyReq\x1a\f.TxVerifyResB\aZ\x05./rpcb\x06proto3"
+	"\bTxVerify\x12\f.TxVerifyReq\x1a\f.TxVerifyRes\x12+\n" +
+	"\tTxReceive\x12\r.TxReceiveReq\x1a\r.TxReceiveRes(\x01B\aZ\x05./rpcb\x06proto3"
 
 var (
 	file_tx_proto_rawDescOnce sync.Once
@@ -585,35 +669,39 @@ func file_tx_proto_rawDescGZIP() []byte {
 	return file_tx_proto_rawDescData
 }
 
-var file_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_tx_proto_goTypes = []any{
-	(*TxSearchReq)(nil), // 0: TxSearchReq
-	(*TxSearchRes)(nil), // 1: TxSearchRes
-	(*TxProveReq)(nil),  // 2: TxProveReq
-	(*TxProveRes)(nil),  // 3: TxProveRes
-	(*TxSendReq)(nil),   // 4: TxSendReq
-	(*TxSendRes)(nil),   // 5: TxSendRes
-	(*TxVerifyReq)(nil), // 6: TxVerifyReq
-	(*TxVerifyRes)(nil), // 7: TxVerifyRes
-	(*TxSignReq)(nil),   // 8: TxSignReq
-	(*TxSignRes)(nil),   // 9: TxSignRes
+	(*TxSearchReq)(nil),  // 0: TxSearchReq
+	(*TxSearchRes)(nil),  // 1: TxSearchRes
+	(*TxProveReq)(nil),   // 2: TxProveReq
+	(*TxProveRes)(nil),   // 3: TxProveRes
+	(*TxSendReq)(nil),    // 4: TxSendReq
+	(*TxSendRes)(nil),    // 5: TxSendRes
+	(*TxVerifyReq)(nil),  // 6: TxVerifyReq
+	(*TxVerifyRes)(nil),  // 7: TxVerifyRes
+	(*TxSignReq)(nil),    // 8: TxSignReq
+	(*TxSignRes)(nil),    // 9: TxSignRes
+	(*TxReceiveReq)(nil), // 10: TxReceiveReq
+	(*TxReceiveRes)(nil), // 11: TxReceiveRes
 }
 var file_tx_proto_depIdxs = []int32{
-	0, // 0: Tx.TxSearch:input_type -> TxSearchReq
-	8, // 1: Tx.TxSign:input_type -> TxSignReq
-	4, // 2: Tx.TxSend:input_type -> TxSendReq
-	2, // 3: Tx.TxProve:input_type -> TxProveReq
-	6, // 4: Tx.TxVerify:input_type -> TxVerifyReq
-	1, // 5: Tx.TxSearch:output_type -> TxSearchRes
-	9, // 6: Tx.TxSign:output_type -> TxSignRes
-	5, // 7: Tx.TxSend:output_type -> TxSendRes
-	3, // 8: Tx.TxProve:output_type -> TxProveRes
-	7, // 9: Tx.TxVerify:output_type -> TxVerifyRes
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: Tx.TxSearch:input_type -> TxSearchReq
+	8,  // 1: Tx.TxSign:input_type -> TxSignReq
+	4,  // 2: Tx.TxSend:input_type -> TxSendReq
+	2,  // 3: Tx.TxProve:input_type -> TxProveReq
+	6,  // 4: Tx.TxVerify:input_type -> TxVerifyReq
+	10, // 5: Tx.TxReceive:input_type -> TxReceiveReq
+	1,  // 6: Tx.TxSearch:output_type -> TxSearchRes
+	9,  // 7: Tx.TxSign:output_type -> TxSignRes
+	5,  // 8: Tx.TxSend:output_type -> TxSendRes
+	3,  // 9: Tx.TxProve:output_type -> TxProveRes
+	7,  // 10: Tx.TxVerify:output_type -> TxVerifyRes
+	11, // 11: Tx.TxReceive:output_type -> TxReceiveRes
+	6,  // [6:12] is the sub-list for method output_type
+	0,  // [0:6] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_tx_proto_init() }
@@ -627,7 +715,7 @@ func file_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tx_proto_rawDesc), len(file_tx_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
