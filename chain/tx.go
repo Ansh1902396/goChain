@@ -83,7 +83,7 @@ func (t SigTx) Hash() Hash {
 	return NewHash(t)
 }
 
-func TxHash(tx Tx) Hash {
+func TxHash(tx SigTx) Hash {
 	return NewHash(tx)
 }
 
