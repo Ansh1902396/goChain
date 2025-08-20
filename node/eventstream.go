@@ -62,7 +62,7 @@ func (s *EventStream) RemoveSubscriber(sub string) {
 	}
 }
 
-func (s *EventStream) StreamEvent() {
+func (s *EventStream) StreamEvents() {
 	defer s.wg.Done()
 	for {
 		select {

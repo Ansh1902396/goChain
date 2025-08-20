@@ -31,6 +31,15 @@ type TxSrv struct {
 	txRelayer     TxRelayer
 }
 
+func NewTxSrv(keyStoreDir, blockStoreDir string, txApplier TxApplier, txRelayer TxRelayer) *TxSrv {
+	return &TxSrv{
+		keyStoreDir:   keyStoreDir,
+		blockStoreDir: blockStoreDir,
+		txApplier:     txApplier,
+		txRelayer:     txRelayer,
+	}
+}
+
 func sendTxSearchRes(
 	blk chain.SigBlock, tx chain.SigTx,
 	stream grpc.ServerStreamingServer[TxSearchRes],

@@ -18,6 +18,13 @@ type AccountSrv struct {
 	balChecker  BalanceChecker
 }
 
+func NewAccountSrv(keyStoreDir string, balChecker BalanceChecker) *AccountSrv {
+	return &AccountSrv{
+		keyStoreDir: keyStoreDir,
+		balChecker:  balChecker,
+	}
+}
+
 func (s *AccountSrv) AccountCreate(ctx context.Context, req *AccountCreateReq) (*AccountCreateRes, error) {
 	// Implement account creation logic here
 	pass := []byte(req.Password)

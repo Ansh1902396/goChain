@@ -34,7 +34,15 @@ func randPeriod(maxPeriod time.Duration) time.Duration {
 	return time.Duration(randSpan.Int64()) + minPeriod
 }
 
-func (p *BlockProposer) ProposeBlock(maxPeriod time.Duration) {
+func (p *BlockProposer) SetAuthority(authority chain.Account) {
+	p.authority = authority
+}
+
+func (p *BlockProposer) SetState(state *chain.State) {
+	p.state = state
+}
+
+func (p *BlockProposer) ProposeBlocks(maxPeriod time.Duration) {
 	defer p.wg.Done()
 
 	randPropose := time.NewTimer(randPeriod(maxPeriod))

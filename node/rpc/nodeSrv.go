@@ -30,6 +30,13 @@ type NodeSrv struct {
 	evStreamer EventStreamer
 }
 
+func NewNodeSrv(peerDisc PeerDiscoverer, evStreamer EventStreamer) *NodeSrv {
+	return &NodeSrv{
+		peerDisc:   peerDisc,
+		evStreamer: evStreamer,
+	}
+}
+
 func (s *NodeSrv) PeerDiscover(
 	_ context.Context, req *PeerDiscoverReq,
 ) (*PeerDiscoverRes, error) {

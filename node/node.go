@@ -2,17 +2,23 @@ package node
 
 import (
 	"context"
+	"fmt"
+	"net"
 	"os/signal"
+	"path/filepath"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/Ansh1902396/chain"
+	"github.com/Ansh1902396/node/rpc"
 	"google.golang.org/grpc"
 )
 
 type NodeCfg struct {
 	Chain         string
 	Balance       uint64
+	Period        time.Duration
 	KeyStoreDir   string
 	NodeAddr      string
 	Bootstrap     bool
@@ -72,4 +78,76 @@ func NewNode(cfg NodeCfg) *Node {
 		blkRelay:  blkRelay,
 	}
 
+}
+
+func (n *Node) Start() error {
+	defer n.ctxCancel()
+	n.wg.Add(1)
+
+	go n.evStream.StreamEvents()
+
+	state, err := n.StateSync.SyncState()
+	if err != nil {
+		return err
+	}
+	n.state = state
+	n.wg.Add(1)
+	go n.peerDisc.DiscoverPeers(n.cfg.Period)
+	n.wg.Add(1)
+	go n.txRelay.RelayMsgs(n.cfg.Period)
+
+	if n.cfg.Bootstrap {
+		path := filepath.Join(n.cfg.KeyStoreDir, string(n.state.Authority()))
+		auth, err := chain.ReadAccount(path, []byte(n.cfg.AuthorityPass))
+
+		if err != nil {
+			return err
+		}
+		n.blockProp.SetAuthority(auth)
+
+		n.blockProp.SetState(n.state)
+
+		n.wg.Add(1)
+		go n.blockProp.ProposeBlocks(n.cfg.Period * 2)
+
+	}
+
+	n.wg.Add(1)
+	go n.blkRelay.RelayMsgs(n.cfg.Period)
+	select {
+	case <-n.ctx.Done():
+	case err = <-n.chErr:
+		fmt.Println(err)
+	}
+	n.ctxCancel()
+	n.grpcSrv.GracefulStop()
+	n.wg.Wait()
+	return err
+}
+
+func (n *Node) servegRPC() {
+	defer n.wg.Done()
+	lis, err := net.Listen("tcp", n.cfg.NodeAddr)
+	if err != nil {
+		n.chErr <- err
+		return
+	}
+	defer lis.Close()
+	fmt.Printf("<=> gRPC %v\n", n.cfg.NodeAddr)
+	n.grpcSrv = grpc.NewServer()
+	node := rpc.NewNodeSrv(n.peerDisc, n.evStream)
+	rpc.RegisterNodeServer(n.grpcSrv, node)
+	acc := rpc.NewAccountSrv(n.cfg.KeyStoreDir, n.state)
+	rpc.RegisterAccountServer(n.grpcSrv, acc)
+	tx := rpc.NewTxSrv(
+		n.cfg.KeyStoreDir, n.cfg.BlockStoreDir, n.state.Pending, n.txRelay,
+	)
+	rpc.RegisterTxServer(n.grpcSrv, tx)
+	blk := rpc.NewBlockSrv(n.cfg.BlockStoreDir, n.evStream, n.state, n.blkRelay)
+	rpc.RegisterBlockServer(n.grpcSrv, blk)
+	err = n.grpcSrv.Serve(lis)
+	if err != nil {
+		n.chErr <- err
+		return
+	}
 }

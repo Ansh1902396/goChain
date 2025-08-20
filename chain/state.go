@@ -187,6 +187,10 @@ func (s *State) ApplyBlock(blk SigBlock) error {
 
 }
 
+func (s *State) Authority() Address {
+	return s.authority
+}
+
 func (s *State) LastBlock() SigBlock {
 	s.mtx.RLock()
 	defer s.mtx.RUnlock()

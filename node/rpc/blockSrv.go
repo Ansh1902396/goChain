@@ -24,7 +24,16 @@ type BlockSrv struct {
 	UnimplementedBlockServer
 	blockStoreDir string
 	blockApplier  BlockApplier
+	eventPub      chain.EventPublisher
 	blkRelayer    BlockRelayer
+}
+
+func NewBlockSrv(blockStoreDir string, blockApplier BlockApplier, blkRelayer BlockRelayer) *BlockSrv {
+	return &BlockSrv{
+		blockStoreDir: blockStoreDir,
+		blockApplier:  blockApplier,
+		blkRelayer:    blkRelayer,
+	}
 }
 
 func (s *BlockSrv) BlockSearch(
@@ -101,6 +110,17 @@ func (s *BlockSrv) BlockSync(
 	}
 
 	return nil
+}
+
+func (s *BlockSrv) publishBlockAndTxs(blk chain.SigBlock) {
+	jblk, _ := json.Marshal(blk)
+	event := chain.NewEvent(chain.EvBlock, "validated", jblk)
+	s.eventPub.PublishEvent(event)
+	for _, tx := range blk.Txs {
+		jtx, _ := json.Marshal(tx)
+		event := chain.NewEvent(chain.EvTx, "validated", jtx)
+		s.eventPub.PublishEvent(event)
+	}
 }
 
 func (s *BlockSrv) BlockRecive(
