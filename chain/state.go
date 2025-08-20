@@ -186,3 +186,9 @@ func (s *State) ApplyBlock(blk SigBlock) error {
 	return nil
 
 }
+
+func (s *State) LastBlock() SigBlock {
+	s.mtx.RLock()
+	defer s.mtx.RUnlock()
+	return s.lastBlock
+}

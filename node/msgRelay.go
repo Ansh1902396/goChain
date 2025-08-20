@@ -17,6 +17,39 @@ type GRPCMsgRelay[Msg any] func(
 	ctx context.Context, conn *grpc.ClientConn, chRelay chan Msg,
 ) error
 
+var GRPCBlkRelay GRPCMsgRelay[chain.SigBlock] = func(ctx context.Context, conn *grpc.ClientConn, chRelay chan chain.SigBlock) error {
+	cln := rpc.NewBlockClient(conn)
+	stream, err := cln.BlockReceive(context.Background())
+
+	if err != nil {
+		return err
+	}
+	defer stream.CloseAndRecv()
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case block, open := <-chRelay:
+			if !open {
+				return nil
+			}
+			jblock, err := json.Marshal(block)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			req := &rpc.BlockReceiveReq{Block: jblock}
+			err = stream.Send(req)
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+		}
+	}
+
+}
+
 var GRPCTxRelay GRPCMsgRelay[chain.SigTx] = func(ctx context.Context, conn *grpc.ClientConn, chRelay chan chain.SigTx) error {
 	cln := rpc.NewTxClient(conn)
 	stream, err := cln.TxReceive(context.Background())

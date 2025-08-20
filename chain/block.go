@@ -23,6 +23,16 @@ type Block struct {
 	Time       time.Time `json:time `
 }
 
+func InitBlockStore(dir string) error {
+	path := filepath.Join(dir, blocksFile)
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	return nil
+}
+
 func NewBlock(number uint64, parent Hash, txs []SigTx) (Block, error) {
 	merkleTree, err := MerkleHash(txs, TxHash, TxPairHash)
 	if err != nil {

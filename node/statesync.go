@@ -4,8 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 
 	"github.com/Ansh1902396/chain"
+	"github.com/Ansh1902396/node/rpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type StateSync struct {
@@ -36,7 +40,7 @@ func (s *StateSync) SyncState() (*chain.State, error) {
 				return nil, err
 			}
 		} else {
-			gen, err := s.syncGenesis()
+			gen, err = s.syncGenesis()
 			if err != nil {
 				return nil, err
 			}
@@ -109,7 +113,7 @@ func (s *StateSync) createGenesis() (chain.SigGenesis, error) {
 		s.cfg.Chain, auth.Address(), acc.Address(), s.cfg.Balance,
 	)
 
-	sgen, err := auth.SignGen(gen)
+	sgen, err := auth.SignGen(*gen)
 	if err != nil {
 		return chain.SigGenesis{}, err
 	}
@@ -214,4 +218,65 @@ func (s *StateSync) syncBlocks() error {
 	}
 
 	return nil
+}
+
+func (s *StateSync) grpcGenesisSync() ([]byte, error) {
+	conn, err := grpc.NewClient(
+		s.cfg.SeedAddr, grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	defer conn.Close()
+
+	cln := rpc.NewBlockClient(conn)
+	req := &rpc.GenesisSyncReq{}
+	res, err := cln.GenesisSync(s.ctx, req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Genesis, nil
+}
+
+func (s *StateSync) grpcBlockSync(peer string) (
+	func(yield func(err error, jblk []byte) bool), func(), error,
+) {
+	conn, err := grpc.NewClient(
+		peer, grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	close := func() {
+		conn.Close()
+	}
+
+	cln := rpc.NewBlockClient(conn)
+	req := &rpc.BlockSyncReq{Number: s.state.LastBlock().Number + 1}
+	stream, err := cln.BlockSync(s.ctx, req)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	more := true
+
+	blocks := func(yield func(err error, jblk []byte) bool) {
+		for more {
+			res, err := stream.Recv()
+			if err != io.EOF {
+				return
+			}
+			if err != nil {
+				yield(err, nil)
+				return
+			}
+			more = yield(nil, res.Block)
+		}
+	}
+	return blocks, close, nil
 }
