@@ -101,6 +101,86 @@ func (x *GenesisSyncRes) GetGenesis() []byte {
 	return nil
 }
 
+type BlockReceiveReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Block         []byte                 `protobuf:"bytes,1,opt,name=Block,proto3" json:"Block,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlockReceiveReq) Reset() {
+	*x = BlockReceiveReq{}
+	mi := &file_block_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlockReceiveReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlockReceiveReq) ProtoMessage() {}
+
+func (x *BlockReceiveReq) ProtoReflect() protoreflect.Message {
+	mi := &file_block_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlockReceiveReq.ProtoReflect.Descriptor instead.
+func (*BlockReceiveReq) Descriptor() ([]byte, []int) {
+	return file_block_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *BlockReceiveReq) GetBlock() []byte {
+	if x != nil {
+		return x.Block
+	}
+	return nil
+}
+
+type BlockReceiveRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlockReceiveRes) Reset() {
+	*x = BlockReceiveRes{}
+	mi := &file_block_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlockReceiveRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlockReceiveRes) ProtoMessage() {}
+
+func (x *BlockReceiveRes) ProtoReflect() protoreflect.Message {
+	mi := &file_block_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlockReceiveRes.ProtoReflect.Descriptor instead.
+func (*BlockReceiveRes) Descriptor() ([]byte, []int) {
+	return file_block_proto_rawDescGZIP(), []int{3}
+}
+
 type BlockSearchReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Number        uint64                 `protobuf:"varint,1,opt,name=Number,proto3" json:"Number,omitempty"`
@@ -112,7 +192,7 @@ type BlockSearchReq struct {
 
 func (x *BlockSearchReq) Reset() {
 	*x = BlockSearchReq{}
-	mi := &file_block_proto_msgTypes[2]
+	mi := &file_block_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -124,7 +204,7 @@ func (x *BlockSearchReq) String() string {
 func (*BlockSearchReq) ProtoMessage() {}
 
 func (x *BlockSearchReq) ProtoReflect() protoreflect.Message {
-	mi := &file_block_proto_msgTypes[2]
+	mi := &file_block_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -137,7 +217,7 @@ func (x *BlockSearchReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BlockSearchReq.ProtoReflect.Descriptor instead.
 func (*BlockSearchReq) Descriptor() ([]byte, []int) {
-	return file_block_proto_rawDescGZIP(), []int{2}
+	return file_block_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *BlockSearchReq) GetNumber() uint64 {
@@ -170,7 +250,7 @@ type BlockSearchRes struct {
 
 func (x *BlockSearchRes) Reset() {
 	*x = BlockSearchRes{}
-	mi := &file_block_proto_msgTypes[3]
+	mi := &file_block_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -182,7 +262,7 @@ func (x *BlockSearchRes) String() string {
 func (*BlockSearchRes) ProtoMessage() {}
 
 func (x *BlockSearchRes) ProtoReflect() protoreflect.Message {
-	mi := &file_block_proto_msgTypes[3]
+	mi := &file_block_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -195,7 +275,7 @@ func (x *BlockSearchRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BlockSearchRes.ProtoReflect.Descriptor instead.
 func (*BlockSearchRes) Descriptor() ([]byte, []int) {
-	return file_block_proto_rawDescGZIP(), []int{3}
+	return file_block_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *BlockSearchRes) GetBlock() []byte {
@@ -214,7 +294,7 @@ type BlockSyncReq struct {
 
 func (x *BlockSyncReq) Reset() {
 	*x = BlockSyncReq{}
-	mi := &file_block_proto_msgTypes[4]
+	mi := &file_block_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -226,7 +306,7 @@ func (x *BlockSyncReq) String() string {
 func (*BlockSyncReq) ProtoMessage() {}
 
 func (x *BlockSyncReq) ProtoReflect() protoreflect.Message {
-	mi := &file_block_proto_msgTypes[4]
+	mi := &file_block_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -239,7 +319,7 @@ func (x *BlockSyncReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BlockSyncReq.ProtoReflect.Descriptor instead.
 func (*BlockSyncReq) Descriptor() ([]byte, []int) {
-	return file_block_proto_rawDescGZIP(), []int{4}
+	return file_block_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *BlockSyncReq) GetNumber() uint64 {
@@ -258,7 +338,7 @@ type BlockSyncRes struct {
 
 func (x *BlockSyncRes) Reset() {
 	*x = BlockSyncRes{}
-	mi := &file_block_proto_msgTypes[5]
+	mi := &file_block_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -270,7 +350,7 @@ func (x *BlockSyncRes) String() string {
 func (*BlockSyncRes) ProtoMessage() {}
 
 func (x *BlockSyncRes) ProtoReflect() protoreflect.Message {
-	mi := &file_block_proto_msgTypes[5]
+	mi := &file_block_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -283,7 +363,7 @@ func (x *BlockSyncRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BlockSyncRes.ProtoReflect.Descriptor instead.
 func (*BlockSyncRes) Descriptor() ([]byte, []int) {
-	return file_block_proto_rawDescGZIP(), []int{5}
+	return file_block_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *BlockSyncRes) GetBlock() []byte {
@@ -300,7 +380,10 @@ const file_block_proto_rawDesc = "" +
 	"\vblock.proto\"\x10\n" +
 	"\x0eGenesisSyncReq\"*\n" +
 	"\x0eGenesisSyncRes\x12\x18\n" +
-	"\aGenesis\x18\x01 \x01(\fR\aGenesis\"T\n" +
+	"\aGenesis\x18\x01 \x01(\fR\aGenesis\"'\n" +
+	"\x0fBlockReceiveReq\x12\x14\n" +
+	"\x05Block\x18\x01 \x01(\fR\x05Block\"\x11\n" +
+	"\x0fBlockReceiveRes\"T\n" +
 	"\x0eBlockSearchReq\x12\x16\n" +
 	"\x06Number\x18\x01 \x01(\x04R\x06Number\x12\x12\n" +
 	"\x04Hash\x18\x02 \x01(\tR\x04Hash\x12\x16\n" +
@@ -310,11 +393,12 @@ const file_block_proto_rawDesc = "" +
 	"\fBlockSyncReq\x12\x16\n" +
 	"\x06Number\x18\x01 \x01(\x04R\x06Number\"$\n" +
 	"\fBlockSyncRes\x12\x14\n" +
-	"\x05Block\x18\x01 \x01(\fR\x05Block2\x98\x01\n" +
+	"\x05Block\x18\x01 \x01(\fR\x05Block2\xce\x01\n" +
 	"\x05Block\x121\n" +
 	"\vBlockSearch\x12\x0f.BlockSearchReq\x1a\x0f.BlockSearchRes0\x01\x12/\n" +
 	"\vGenesisSync\x12\x0f.GenesisSyncReq\x1a\x0f.GenesisSyncRes\x12+\n" +
-	"\tBlockSync\x12\r.BlockSyncReq\x1a\r.BlockSyncRes0\x01B\aZ\x05./rpcb\x06proto3"
+	"\tBlockSync\x12\r.BlockSyncReq\x1a\r.BlockSyncRes0\x01\x124\n" +
+	"\fBlockReceive\x12\x10.BlockReceiveReq\x1a\x10.BlockReceiveRes(\x01B\aZ\x05./rpcb\x06proto3"
 
 var (
 	file_block_proto_rawDescOnce sync.Once
@@ -328,24 +412,28 @@ func file_block_proto_rawDescGZIP() []byte {
 	return file_block_proto_rawDescData
 }
 
-var file_block_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_block_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_block_proto_goTypes = []any{
-	(*GenesisSyncReq)(nil), // 0: GenesisSyncReq
-	(*GenesisSyncRes)(nil), // 1: GenesisSyncRes
-	(*BlockSearchReq)(nil), // 2: BlockSearchReq
-	(*BlockSearchRes)(nil), // 3: BlockSearchRes
-	(*BlockSyncReq)(nil),   // 4: BlockSyncReq
-	(*BlockSyncRes)(nil),   // 5: BlockSyncRes
+	(*GenesisSyncReq)(nil),  // 0: GenesisSyncReq
+	(*GenesisSyncRes)(nil),  // 1: GenesisSyncRes
+	(*BlockReceiveReq)(nil), // 2: BlockReceiveReq
+	(*BlockReceiveRes)(nil), // 3: BlockReceiveRes
+	(*BlockSearchReq)(nil),  // 4: BlockSearchReq
+	(*BlockSearchRes)(nil),  // 5: BlockSearchRes
+	(*BlockSyncReq)(nil),    // 6: BlockSyncReq
+	(*BlockSyncRes)(nil),    // 7: BlockSyncRes
 }
 var file_block_proto_depIdxs = []int32{
-	2, // 0: Block.BlockSearch:input_type -> BlockSearchReq
+	4, // 0: Block.BlockSearch:input_type -> BlockSearchReq
 	0, // 1: Block.GenesisSync:input_type -> GenesisSyncReq
-	4, // 2: Block.BlockSync:input_type -> BlockSyncReq
-	3, // 3: Block.BlockSearch:output_type -> BlockSearchRes
-	1, // 4: Block.GenesisSync:output_type -> GenesisSyncRes
-	5, // 5: Block.BlockSync:output_type -> BlockSyncRes
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	6, // 2: Block.BlockSync:input_type -> BlockSyncReq
+	2, // 3: Block.BlockReceive:input_type -> BlockReceiveReq
+	5, // 4: Block.BlockSearch:output_type -> BlockSearchRes
+	1, // 5: Block.GenesisSync:output_type -> GenesisSyncRes
+	7, // 6: Block.BlockSync:output_type -> BlockSyncRes
+	3, // 7: Block.BlockReceive:output_type -> BlockReceiveRes
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -362,7 +450,7 @@ func file_block_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_block_proto_rawDesc), len(file_block_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

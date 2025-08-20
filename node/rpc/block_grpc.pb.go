@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Block_BlockSearch_FullMethodName = "/Block/BlockSearch"
-	Block_GenesisSync_FullMethodName = "/Block/GenesisSync"
-	Block_BlockSync_FullMethodName   = "/Block/BlockSync"
+	Block_BlockSearch_FullMethodName  = "/Block/BlockSearch"
+	Block_GenesisSync_FullMethodName  = "/Block/GenesisSync"
+	Block_BlockSync_FullMethodName    = "/Block/BlockSync"
+	Block_BlockReceive_FullMethodName = "/Block/BlockReceive"
 )
 
 // BlockClient is the client API for Block service.
@@ -31,6 +32,7 @@ type BlockClient interface {
 	BlockSearch(ctx context.Context, in *BlockSearchReq, opts ...grpc.CallOption) (grpc.ServerStreamingClient[BlockSearchRes], error)
 	GenesisSync(ctx context.Context, in *GenesisSyncReq, opts ...grpc.CallOption) (*GenesisSyncRes, error)
 	BlockSync(ctx context.Context, in *BlockSyncReq, opts ...grpc.CallOption) (grpc.ServerStreamingClient[BlockSyncRes], error)
+	BlockReceive(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[BlockReceiveReq, BlockReceiveRes], error)
 }
 
 type blockClient struct {
@@ -89,6 +91,19 @@ func (c *blockClient) BlockSync(ctx context.Context, in *BlockSyncReq, opts ...g
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Block_BlockSyncClient = grpc.ServerStreamingClient[BlockSyncRes]
 
+func (c *blockClient) BlockReceive(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[BlockReceiveReq, BlockReceiveRes], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &Block_ServiceDesc.Streams[2], Block_BlockReceive_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[BlockReceiveReq, BlockReceiveRes]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Block_BlockReceiveClient = grpc.ClientStreamingClient[BlockReceiveReq, BlockReceiveRes]
+
 // BlockServer is the server API for Block service.
 // All implementations must embed UnimplementedBlockServer
 // for forward compatibility.
@@ -96,6 +111,7 @@ type BlockServer interface {
 	BlockSearch(*BlockSearchReq, grpc.ServerStreamingServer[BlockSearchRes]) error
 	GenesisSync(context.Context, *GenesisSyncReq) (*GenesisSyncRes, error)
 	BlockSync(*BlockSyncReq, grpc.ServerStreamingServer[BlockSyncRes]) error
+	BlockReceive(grpc.ClientStreamingServer[BlockReceiveReq, BlockReceiveRes]) error
 	mustEmbedUnimplementedBlockServer()
 }
 
@@ -114,6 +130,9 @@ func (UnimplementedBlockServer) GenesisSync(context.Context, *GenesisSyncReq) (*
 }
 func (UnimplementedBlockServer) BlockSync(*BlockSyncReq, grpc.ServerStreamingServer[BlockSyncRes]) error {
 	return status.Errorf(codes.Unimplemented, "method BlockSync not implemented")
+}
+func (UnimplementedBlockServer) BlockReceive(grpc.ClientStreamingServer[BlockReceiveReq, BlockReceiveRes]) error {
+	return status.Errorf(codes.Unimplemented, "method BlockReceive not implemented")
 }
 func (UnimplementedBlockServer) mustEmbedUnimplementedBlockServer() {}
 func (UnimplementedBlockServer) testEmbeddedByValue()               {}
@@ -176,6 +195,13 @@ func _Block_BlockSync_Handler(srv interface{}, stream grpc.ServerStream) error {
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Block_BlockSyncServer = grpc.ServerStreamingServer[BlockSyncRes]
 
+func _Block_BlockReceive_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(BlockServer).BlockReceive(&grpc.GenericServerStream[BlockReceiveReq, BlockReceiveRes]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Block_BlockReceiveServer = grpc.ClientStreamingServer[BlockReceiveReq, BlockReceiveRes]
+
 // Block_ServiceDesc is the grpc.ServiceDesc for Block service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -198,6 +224,11 @@ var Block_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "BlockSync",
 			Handler:       _Block_BlockSync_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "BlockReceive",
+			Handler:       _Block_BlockReceive_Handler,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "block.proto",

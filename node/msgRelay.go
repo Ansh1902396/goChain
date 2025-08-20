@@ -62,14 +62,6 @@ type MsgRelay[Msg any, Relay GRPCMsgRelay[Msg]] struct {
 	chPeerAdd, chPeerRem chan string
 }
 
-type TxRelayer interface {
-	RelayTx(tx chain.SigTx)
-}
-
-type BlockRelayer interface {
-	RelayBlock(block chain.SigBlock)
-}
-
 func (r *MsgRelay[Msg, Relay]) RelayTx(tx Msg) {
 	r.chMsg <- tx
 }

@@ -3,6 +3,8 @@ package rpc
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"strings"
 
 	"github.com/Ansh1902396/chain"
@@ -11,9 +13,18 @@ import (
 	status "google.golang.org/grpc/status"
 )
 
+type BlockApplier interface {
+	ApplyBlockToState(blk chain.SigBlock) error
+}
+
+type BlockRelayer interface {
+	RelayBlock(block chain.SigBlock)
+}
 type BlockSrv struct {
 	UnimplementedBlockServer
 	blockStoreDir string
+	blockApplier  BlockApplier
+	blkRelayer    BlockRelayer
 }
 
 func (s *BlockSrv) BlockSearch(
@@ -90,4 +101,43 @@ func (s *BlockSrv) BlockSync(
 	}
 
 	return nil
+}
+
+func (s *BlockSrv) BlockRecive(
+	stream grpc.ClientStreamingServer[BlockReceiveReq, BlockReceiveRes],
+) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			res := &BlockReceiveRes{}
+			return stream.SendAndClose(res)
+		}
+
+		if err != nil {
+			return status.Errorf(codes.Internal, err.Error())
+		}
+
+		var blk chain.SigBlock
+
+		err = json.Unmarshal(req.Block, &blk)
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		fmt.Printf("<=== Block recive \n%v", blk)
+		err = s.blockApplier.ApplyBlockToState(blk)
+
+		if err != nil {
+			fmt.Print(err)
+			continue
+		}
+
+		if s.blkRelayer != nil {
+			s.blkRelayer.RelayBlock(blk)
+		}
+		if s.eventPub != nil {
+			s.publishBlockAndTxs(blk)
+		}
+	}
 }
