@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Node_PeerDiscover_FullMethodName = "/Node/PeerDiscover"
+	Node_PeerDiscover_FullMethodName    = "/Node/PeerDiscover"
+	Node_StreamSubscribe_FullMethodName = "/Node/StreamSubscribe"
 )
 
 // NodeClient is the client API for Node service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeClient interface {
 	PeerDiscover(ctx context.Context, in *PeerDiscoverReq, opts ...grpc.CallOption) (*PeerDiscoverRes, error)
+	StreamSubscribe(ctx context.Context, in *StreamSubscribeReq, opts ...grpc.CallOption) (*StreamSubscribeRes, error)
 }
 
 type nodeClient struct {
@@ -47,11 +49,22 @@ func (c *nodeClient) PeerDiscover(ctx context.Context, in *PeerDiscoverReq, opts
 	return out, nil
 }
 
+func (c *nodeClient) StreamSubscribe(ctx context.Context, in *StreamSubscribeReq, opts ...grpc.CallOption) (*StreamSubscribeRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StreamSubscribeRes)
+	err := c.cc.Invoke(ctx, Node_StreamSubscribe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NodeServer is the server API for Node service.
 // All implementations must embed UnimplementedNodeServer
 // for forward compatibility.
 type NodeServer interface {
 	PeerDiscover(context.Context, *PeerDiscoverReq) (*PeerDiscoverRes, error)
+	StreamSubscribe(context.Context, *StreamSubscribeReq) (*StreamSubscribeRes, error)
 	mustEmbedUnimplementedNodeServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedNodeServer struct{}
 
 func (UnimplementedNodeServer) PeerDiscover(context.Context, *PeerDiscoverReq) (*PeerDiscoverRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PeerDiscover not implemented")
+}
+func (UnimplementedNodeServer) StreamSubscribe(context.Context, *StreamSubscribeReq) (*StreamSubscribeRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StreamSubscribe not implemented")
 }
 func (UnimplementedNodeServer) mustEmbedUnimplementedNodeServer() {}
 func (UnimplementedNodeServer) testEmbeddedByValue()              {}
@@ -104,6 +120,24 @@ func _Node_PeerDiscover_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Node_StreamSubscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StreamSubscribeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServer).StreamSubscribe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Node_StreamSubscribe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServer).StreamSubscribe(ctx, req.(*StreamSubscribeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Node_ServiceDesc is the grpc.ServiceDesc for Node service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var Node_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PeerDiscover",
 			Handler:    _Node_PeerDiscover_Handler,
+		},
+		{
+			MethodName: "StreamSubscribe",
+			Handler:    _Node_StreamSubscribe_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

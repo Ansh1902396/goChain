@@ -10,6 +10,15 @@ message PeerDiscoverRes {
     repeated string Peers =1 ;
 }
 
+message StreamSubscribeReq { 
+    repeated uint64 EventTypes =1 ; 
+}
+
+message StreamSubscribeRes {
+    bytes Event =1; 
+}
+
 service Node { 
     rpc PeerDiscover(PeerDiscoverReq) returns (PeerDiscoverRes) ;
+    rpc StreamSubscribe(StreamSubscribeReq) returns (StreamSubscribeRes) ;
 }
