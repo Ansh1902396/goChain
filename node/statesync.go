@@ -88,6 +88,12 @@ func (s *StateSync) createGenesis() (chain.SigGenesis, error) {
 		return chain.SigGenesis{}, err
 	}
 
+	// Save the authority account to the keystore
+	err = auth.Write(s.cfg.KeyStoreDir, authPass)
+	if err != nil {
+		return chain.SigGenesis{}, err
+	}
+
 	ownerPass := []byte(s.cfg.OwnerPass)
 	if len(ownerPass) < 5 {
 		return chain.SigGenesis{}, fmt.Errorf("owner password must be at least 5 characters long")

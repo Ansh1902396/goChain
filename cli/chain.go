@@ -8,8 +8,8 @@ import (
 
 func ChainCmd(ctx context.Context) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:           "bcn",
-		Short:         "Manages the blockchain node, accounts, transactions, and blocks",
+		Use:           "RuChain",
+		Short:         "RuChain - Manages the blockchain node, accounts, transactions, and blocks",
 		Version:       "0.1.0",
 		SilenceUsage:  true,
 		SilenceErrors: true,
