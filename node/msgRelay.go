@@ -95,8 +95,9 @@ type MsgRelay[Msg any, Relay GRPCMsgRelay[Msg]] struct {
 	chPeerAdd, chPeerRem chan string
 }
 
-func (r *MsgRelay[Msg, Relay]) RelayTx(tx Msg) {
+func (r *MsgRelay[Msg, Relay]) RelayTx(tx Msg) error {
 	r.chMsg <- tx
+	return nil
 }
 
 func (r *MsgRelay[Msg, Relay]) RelayBlock(block Msg) {

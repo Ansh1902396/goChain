@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.7
 // 	protoc        v5.29.3
-// source: node.proto
+// source: node/rpc/node.proto
 
 package rpc
 
@@ -30,7 +30,7 @@ type PeerDiscoverReq struct {
 
 func (x *PeerDiscoverReq) Reset() {
 	*x = PeerDiscoverReq{}
-	mi := &file_node_proto_msgTypes[0]
+	mi := &file_node_rpc_node_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +42,7 @@ func (x *PeerDiscoverReq) String() string {
 func (*PeerDiscoverReq) ProtoMessage() {}
 
 func (x *PeerDiscoverReq) ProtoReflect() protoreflect.Message {
-	mi := &file_node_proto_msgTypes[0]
+	mi := &file_node_rpc_node_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +55,7 @@ func (x *PeerDiscoverReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PeerDiscoverReq.ProtoReflect.Descriptor instead.
 func (*PeerDiscoverReq) Descriptor() ([]byte, []int) {
-	return file_node_proto_rawDescGZIP(), []int{0}
+	return file_node_rpc_node_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *PeerDiscoverReq) GetPeer() string {
@@ -74,7 +74,7 @@ type PeerDiscoverRes struct {
 
 func (x *PeerDiscoverRes) Reset() {
 	*x = PeerDiscoverRes{}
-	mi := &file_node_proto_msgTypes[1]
+	mi := &file_node_rpc_node_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +86,7 @@ func (x *PeerDiscoverRes) String() string {
 func (*PeerDiscoverRes) ProtoMessage() {}
 
 func (x *PeerDiscoverRes) ProtoReflect() protoreflect.Message {
-	mi := &file_node_proto_msgTypes[1]
+	mi := &file_node_rpc_node_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +99,7 @@ func (x *PeerDiscoverRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PeerDiscoverRes.ProtoReflect.Descriptor instead.
 func (*PeerDiscoverRes) Descriptor() ([]byte, []int) {
-	return file_node_proto_rawDescGZIP(), []int{1}
+	return file_node_rpc_node_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PeerDiscoverRes) GetPeers() []string {
@@ -118,7 +118,7 @@ type StreamSubscribeReq struct {
 
 func (x *StreamSubscribeReq) Reset() {
 	*x = StreamSubscribeReq{}
-	mi := &file_node_proto_msgTypes[2]
+	mi := &file_node_rpc_node_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -130,7 +130,7 @@ func (x *StreamSubscribeReq) String() string {
 func (*StreamSubscribeReq) ProtoMessage() {}
 
 func (x *StreamSubscribeReq) ProtoReflect() protoreflect.Message {
-	mi := &file_node_proto_msgTypes[2]
+	mi := &file_node_rpc_node_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +143,7 @@ func (x *StreamSubscribeReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamSubscribeReq.ProtoReflect.Descriptor instead.
 func (*StreamSubscribeReq) Descriptor() ([]byte, []int) {
-	return file_node_proto_rawDescGZIP(), []int{2}
+	return file_node_rpc_node_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StreamSubscribeReq) GetEventTypes() []uint64 {
@@ -162,7 +162,7 @@ type StreamSubscribeRes struct {
 
 func (x *StreamSubscribeRes) Reset() {
 	*x = StreamSubscribeRes{}
-	mi := &file_node_proto_msgTypes[3]
+	mi := &file_node_rpc_node_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -174,7 +174,7 @@ func (x *StreamSubscribeRes) String() string {
 func (*StreamSubscribeRes) ProtoMessage() {}
 
 func (x *StreamSubscribeRes) ProtoReflect() protoreflect.Message {
-	mi := &file_node_proto_msgTypes[3]
+	mi := &file_node_rpc_node_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -187,7 +187,7 @@ func (x *StreamSubscribeRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamSubscribeRes.ProtoReflect.Descriptor instead.
 func (*StreamSubscribeRes) Descriptor() ([]byte, []int) {
-	return file_node_proto_rawDescGZIP(), []int{3}
+	return file_node_rpc_node_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StreamSubscribeRes) GetEvent() []byte {
@@ -197,12 +197,11 @@ func (x *StreamSubscribeRes) GetEvent() []byte {
 	return nil
 }
 
-var File_node_proto protoreflect.FileDescriptor
+var File_node_rpc_node_proto protoreflect.FileDescriptor
 
-const file_node_proto_rawDesc = "" +
+const file_node_rpc_node_proto_rawDesc = "" +
 	"\n" +
-	"\n" +
-	"node.proto\"%\n" +
+	"\x13node/rpc/node.proto\"%\n" +
 	"\x0fPeerDiscoverReq\x12\x12\n" +
 	"\x04Peer\x18\x01 \x01(\tR\x04Peer\"'\n" +
 	"\x0fPeerDiscoverRes\x12\x14\n" +
@@ -218,25 +217,25 @@ const file_node_proto_rawDesc = "" +
 	"\x0fStreamSubscribe\x12\x13.StreamSubscribeReq\x1a\x13.StreamSubscribeRes0\x01B\aZ\x05./rpcb\x06proto3"
 
 var (
-	file_node_proto_rawDescOnce sync.Once
-	file_node_proto_rawDescData []byte
+	file_node_rpc_node_proto_rawDescOnce sync.Once
+	file_node_rpc_node_proto_rawDescData []byte
 )
 
-func file_node_proto_rawDescGZIP() []byte {
-	file_node_proto_rawDescOnce.Do(func() {
-		file_node_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_node_proto_rawDesc), len(file_node_proto_rawDesc)))
+func file_node_rpc_node_proto_rawDescGZIP() []byte {
+	file_node_rpc_node_proto_rawDescOnce.Do(func() {
+		file_node_rpc_node_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_node_rpc_node_proto_rawDesc), len(file_node_rpc_node_proto_rawDesc)))
 	})
-	return file_node_proto_rawDescData
+	return file_node_rpc_node_proto_rawDescData
 }
 
-var file_node_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_node_proto_goTypes = []any{
+var file_node_rpc_node_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_node_rpc_node_proto_goTypes = []any{
 	(*PeerDiscoverReq)(nil),    // 0: PeerDiscoverReq
 	(*PeerDiscoverRes)(nil),    // 1: PeerDiscoverRes
 	(*StreamSubscribeReq)(nil), // 2: StreamSubscribeReq
 	(*StreamSubscribeRes)(nil), // 3: StreamSubscribeRes
 }
-var file_node_proto_depIdxs = []int32{
+var file_node_rpc_node_proto_depIdxs = []int32{
 	0, // 0: Node.PeerDiscover:input_type -> PeerDiscoverReq
 	2, // 1: Node.StreamSubscribe:input_type -> StreamSubscribeReq
 	1, // 2: Node.PeerDiscover:output_type -> PeerDiscoverRes
@@ -248,26 +247,26 @@ var file_node_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_node_proto_init() }
-func file_node_proto_init() {
-	if File_node_proto != nil {
+func init() { file_node_rpc_node_proto_init() }
+func file_node_rpc_node_proto_init() {
+	if File_node_rpc_node_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_node_proto_rawDesc), len(file_node_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_node_rpc_node_proto_rawDesc), len(file_node_rpc_node_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_node_proto_goTypes,
-		DependencyIndexes: file_node_proto_depIdxs,
-		MessageInfos:      file_node_proto_msgTypes,
+		GoTypes:           file_node_rpc_node_proto_goTypes,
+		DependencyIndexes: file_node_rpc_node_proto_depIdxs,
+		MessageInfos:      file_node_rpc_node_proto_msgTypes,
 	}.Build()
-	File_node_proto = out.File
-	file_node_proto_goTypes = nil
-	file_node_proto_depIdxs = nil
+	File_node_rpc_node_proto = out.File
+	file_node_rpc_node_proto_goTypes = nil
+	file_node_rpc_node_proto_depIdxs = nil
 }

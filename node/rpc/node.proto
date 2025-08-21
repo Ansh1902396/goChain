@@ -20,5 +20,5 @@ message StreamSubscribeRes {
 
 service Node { 
     rpc PeerDiscover(PeerDiscoverReq) returns (PeerDiscoverRes) ;
-    rpc StreamSubscribe(StreamSubscribeReq) returns (StreamSubscribeRes) ;
+    rpc StreamSubscribe(StreamSubscribeReq) returns (stream StreamSubscribeRes) ;
 }

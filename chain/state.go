@@ -196,3 +196,23 @@ func (s *State) LastBlock() SigBlock {
 	defer s.mtx.RUnlock()
 	return s.lastBlock
 }
+
+// Balance returns the balance of the given address
+func (s *State) Balance(acc Address) (uint64, bool) {
+	s.mtx.RLock()
+	defer s.mtx.RUnlock()
+	balance, exists := s.balances[acc]
+	return balance, exists
+}
+
+// Nonce returns the nonce of the given address
+func (s *State) Nonce(acc Address) uint64 {
+	s.mtx.RLock()
+	defer s.mtx.RUnlock()
+	return s.nonces[acc]
+}
+
+// ApplyBlockToState applies a block to the state
+func (s *State) ApplyBlockToState(blk SigBlock) error {
+	return s.ApplyBlock(blk)
+}

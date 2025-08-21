@@ -28,10 +28,11 @@ type BlockSrv struct {
 	blkRelayer    BlockRelayer
 }
 
-func NewBlockSrv(blockStoreDir string, blockApplier BlockApplier, blkRelayer BlockRelayer) *BlockSrv {
+func NewBlockSrv(blockStoreDir string, blockApplier BlockApplier, eventPub chain.EventPublisher, blkRelayer BlockRelayer) *BlockSrv {
 	return &BlockSrv{
 		blockStoreDir: blockStoreDir,
 		blockApplier:  blockApplier,
+		eventPub:      eventPub,
 		blkRelayer:    blkRelayer,
 	}
 }
